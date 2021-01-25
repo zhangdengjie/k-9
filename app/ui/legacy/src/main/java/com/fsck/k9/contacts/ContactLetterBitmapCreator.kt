@@ -26,17 +26,20 @@ class ContactLetterBitmapCreator(
             isAntiAlias = true
             style = Paint.Style.FILL
             setARGB(255, 255, 255, 255)
-            textSize = pictureSizeInPx.toFloat() * 0.65f
+            textSize = pictureSizeInPx.toFloat() * 0.5f
         }
 
         val rect = Rect()
+        // 获取字符串的第一个字符的范围,存放在一个矩形对象种
         paint.getTextBounds(letter, 0, 1, rect)
-
+        val fontMetrics: Paint.FontMetrics = paint.fontMetrics
+        val distance = (fontMetrics.bottom - fontMetrics.top) / 2 - fontMetrics.bottom
         val width = paint.measureText(letter)
+        // 将文字居中绘制
         canvas.drawText(
             letter,
             pictureSizeInPx / 2f - width / 2f,
-            pictureSizeInPx / 2f + rect.height() / 2f, paint
+            pictureSizeInPx / 2f/*bitmap矩形垂直中心*/ + distance, paint
         )
 
         return bitmap

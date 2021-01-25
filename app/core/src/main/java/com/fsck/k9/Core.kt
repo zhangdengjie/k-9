@@ -56,6 +56,9 @@ object Core : EarlyInit {
         setServicesEnabled(context)
     }
 
+    /**
+     * 动态设置 判断当前使用环境决定组件是否可用 通过enable属性设置
+     */
     private fun setServicesEnabled(context: Context, enabled: Boolean) {
         val pm = context.packageManager
 

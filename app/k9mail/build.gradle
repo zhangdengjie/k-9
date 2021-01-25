@@ -46,17 +46,18 @@ android {
     buildToolsVersion buildConfig.buildTools
 
     defaultConfig {
-        applicationId "com.fsck.k9"
-        testApplicationId "com.fsck.k9.tests"
+        applicationId "com.zdj.email"
+        testApplicationId "com.zdj.email.tests"
 
         versionCode 27026
         versionName '5.727-SNAPSHOT'
 
         // Keep in sync with the resource string array 'supported_languages'
-        resConfigs "in", "br", "ca", "cs", "cy", "da", "de", "et", "en", "es", "eo", "eu", "fr", "gd", "gl", "hr",
-                "is", "it", "lv", "lt", "hu", "nl", "nb", "pl", "pt_PT", "pt_BR", "ru", "ro", "sq", "sk", "sl", "fi",
-                "sv", "tr", "el", "bg", "sr", "uk", "iw", "ar", "fa", "ko", "zh_CN", "zh_TW", "ja"
+//        resConfigs "in", "br", "ca", "cs", "cy", "da", "de", "et", "en", "es", "eo", "eu", "fr", "gd", "gl", "hr",
+//                "is", "it", "lv", "lt", "hu", "nl", "nb", "pl", "pt_PT", "pt_BR", "ru", "ro", "sq", "sk", "sl", "fi",
+//                "sv", "tr", "el", "bg", "sr", "uk", "iw", "ar", "fa", "ko", "zh_CN", "zh_TW", "ja"
 
+        resConfigs "zh_CN"
         minSdkVersion buildConfig.minSdk
         targetSdkVersion buildConfig.targetSdk
 
@@ -66,15 +67,21 @@ android {
     }
 
     signingConfigs {
-        release
+        release {
+            keyAlias 'key_zdj'
+            keyPassword 'zdj_128340'
+            storeFile file('./key_zdj.jks')
+            storePassword 'zdj_128340'
+        }
     }
 
     buildTypes {
         release {
-            if (project.hasProperty('storeFile')) {
-                signingConfig signingConfigs.release
-            }
+//            if (project.hasProperty('storeFile')) {
+//                signingConfig signingConfigs.release
+//            }
 
+            signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
@@ -82,6 +89,7 @@ android {
         }
 
         debug {
+            signingConfig signingConfigs.release
             applicationIdSuffix ".debug"
             testCoverageEnabled rootProject.testCoverage
 
