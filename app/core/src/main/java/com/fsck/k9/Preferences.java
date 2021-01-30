@@ -47,7 +47,7 @@ public class Preferences {
         return preferences;
     }
 
-    private Storage storage;
+    private final Storage storage;
     @GuardedBy("accountLock")
     private Map<String, Account> accounts = null;
     @GuardedBy("accountLock")
@@ -99,6 +99,9 @@ public class Preferences {
         }
     }
 
+    /**
+     * 加载本地账号信息
+     */
     public void loadAccounts() {
         synchronized (accountLock) {
             accounts = new HashMap<>();

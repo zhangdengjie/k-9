@@ -16,6 +16,7 @@
         <!-- Color chip -->
         <View
             android:id="@+id/chip"
+            android:visibility="gone"
             android:layout_width="8dip"
             android:layout_height="match_parent" />
 
@@ -52,10 +53,9 @@
                     android:layout_gravity="center"
                     android:padding="6dp"
                     app:srcCompat="@drawable/status_lock_disabled"
-                    android:tint="?attr/openpgp_grey"
                     android:background="?selectableItemBackground"
                     android:visibility="gone"
-                    />
+                    app:tint="?attr/openpgp_grey" />
 
                 <CheckBox
                     android:id="@+id/flagged"

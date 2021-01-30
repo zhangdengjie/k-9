@@ -1,13 +1,20 @@
 package com.fsck.k9.view;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import timber.log.Timber;
+
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebSettings.RenderPriority;
@@ -54,6 +61,7 @@ public class MessageWebView extends WebView {
      * preferences when configuring the view. This message is used to view a message and to display a message being
      * replied to.
      */
+    @SuppressLint("SetJavaScriptEnabled")
     public void configure(WebViewConfig config) {
         this.setVerticalScrollBarEnabled(true);
         this.setVerticalScrollbarOverlay(true);
@@ -73,6 +81,9 @@ public class MessageWebView extends WebView {
             webSettings.setOffscreenPreRaster(true);
         }
         */
+        if (VERSION.SDK_INT >= VERSION_CODES.M) {
+            webSettings.setOffscreenPreRaster(true);
+        }
 
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(true);
@@ -83,7 +94,7 @@ public class MessageWebView extends WebView {
 
         disableDisplayZoomControls();
 
-        webSettings.setJavaScriptEnabled(false);
+        webSettings.setJavaScriptEnabled(true);
         webSettings.setLoadsImagesAutomatically(true);
         webSettings.setRenderPriority(RenderPriority.HIGH);
 
@@ -95,7 +106,8 @@ public class MessageWebView extends WebView {
         webSettings.setTextZoom(config.getTextZoom());
 
         // Disable network images by default.  This is overridden by preferences.
-        blockNetworkData(true);
+        // 直接显示图片
+        blockNetworkData(false);
     }
 
     /**
@@ -112,8 +124,90 @@ public class MessageWebView extends WebView {
 
     public void displayHtmlContentWithInlineAttachments(@NonNull String htmlText,
             @Nullable AttachmentResolver attachmentResolver, @Nullable OnPageFinishedListener onPageFinishedListener) {
-        setWebViewClient(attachmentResolver, onPageFinishedListener);
+        setWebViewClient(attachmentResolver, new WebViewOnPageFinishedListener(onPageFinishedListener));
         setHtmlContent(htmlText);
+    }
+
+    private class WebViewOnPageFinishedListener implements OnPageFinishedListener {
+
+        private final OnPageFinishedListener mOnPageFinishedListener;
+
+        public WebViewOnPageFinishedListener(OnPageFinishedListener mOnPageFinishedListener) {
+            this.mOnPageFinishedListener = mOnPageFinishedListener;
+        }
+
+        @Override
+        public void onPageFinished() {
+            if (mOnPageFinishedListener != null) {
+                mOnPageFinishedListener.onPageFinished();
+            }
+
+            loadJS();
+        }
+    }
+
+    private void loadJS(){
+        String js = "javascript:(function(){"
+                // 将DIV元素中的外边距和内边距设置为零，防止网页左右有空隙
+                + " var divs = document.getElementsByTagName(\"div\");"
+                + " for(var j=0;j<divs.length;j++){"
+                + "     if(divs[j].parentElement.nodeName != \"BODY\"){"
+                + "       divs[j].style.margin=\"0px\";"
+                + "       divs[j].style.padding=\"0px\";"
+//                + "   divs[j].style.width=document.body.clientWidth-10;"
+                + "       divs[j].style.width=\"fit-content\";"
+                + "     }"
+                + " }"
+
+                + " var objs = document.getElementsByTagName(\"img\"); "
+                + " for(var i=0;i<objs.length;i++){"
+                // 过滤掉GIF图片，防止过度放大后，GIF失真
+                + "     var vkeyWords=/.gif$/;"
+                + "     if(!vkeyWords.test(objs[i].src)){"
+                + "         var hRatio=" + getScreenWidthDP() + "/objs[i].width;"
+                + "         objs[i].height= objs[i].height*hRatio;" // 通过缩放比例来设置图片的高度
+                + "         objs[i].width=" + getScreenWidthDP() + ";" // 设置图片的宽度
+                + "     }"
+                + "  }"
+                + "})()";
+        loadUrl(js);
+
+    }
+
+    /**
+     * 获取屏幕的宽度（单位：像素PX）
+     */
+    private int getScreenWidthPX(){
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        if (wm != null && wm.getDefaultDisplay() != null){
+            wm.getDefaultDisplay().getMetrics(dm);
+            return dm.widthPixels;
+        }else {
+            return 0;
+        }
+    }
+
+    /**
+     * 获取屏幕的宽度（单位：dp）
+     */
+    private int getScreenWidthDP(){
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        if (wm != null && wm.getDefaultDisplay() != null){
+            wm.getDefaultDisplay().getMetrics(dm);
+            return px2dip(dm.widthPixels);
+        }else {
+            return 0;
+        }
+    }
+
+    /**
+     * 像素转DP
+     */
+    public  int px2dip(float pxValue) {
+        float scale = this.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
     }
 
     private void setWebViewClient(@Nullable AttachmentResolver attachmentResolver,

@@ -148,6 +148,7 @@ open class MessageList :
         }
 
         initializeActionBar()
+        // 初始化抽屉布局以及数据
         initializeDrawer(savedInstanceState)
 
         if (!decodeExtras(intent)) {
@@ -155,7 +156,7 @@ open class MessageList :
         }
 
         if (isDrawerEnabled) {
-            drawer!!.updateUserAccountsAndFolders(account)
+            drawer!!.updateUserAccountsAndFolders(accounts[0])
         }
 
         findFragments()
@@ -168,6 +169,9 @@ open class MessageList :
         if (savedInstanceState == null) {
             checkAndRequestPermissions()
         }
+
+        openRealAccount(accounts[0])
+
     }
 
     public override fun onNewIntent(intent: Intent) {

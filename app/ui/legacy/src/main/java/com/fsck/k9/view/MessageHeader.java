@@ -65,7 +65,7 @@ public class MessageHeader extends LinearLayout implements OnClickListener, OnLo
     private TextView mSubjectView;
     private ImageView mCryptoStatusIcon;
 
-    private View mChip;
+//    private View mChip;
     private CheckBox mFlagged;
     private int defaultSubjectColor;
     private TextView mAdditionalHeadersView;
@@ -113,7 +113,7 @@ public class MessageHeader extends LinearLayout implements OnClickListener, OnLo
 
         mSubjectView = findViewById(R.id.subject);
         mAdditionalHeadersView = findViewById(R.id.additional_headers_view);
-        mChip = findViewById(R.id.chip);
+//        mChip = findViewById(R.id.chip);
         mDateView = findViewById(R.id.date);
         mFlagged = findViewById(R.id.flagged);
 
@@ -331,7 +331,7 @@ public class MessageHeader extends LinearLayout implements OnClickListener, OnLo
             mFlagged.setVisibility(View.GONE);
         }
 
-        mChip.setBackgroundColor(mAccount.getChipColor());
+//        mChip.setBackgroundColor(mAccount.getChipColor());
 
         setVisibility(View.VISIBLE);
 

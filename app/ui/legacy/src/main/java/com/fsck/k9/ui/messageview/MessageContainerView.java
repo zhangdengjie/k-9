@@ -423,6 +423,7 @@ public class MessageContainerView extends LinearLayout implements OnCreateContex
             @Override
             public void onPageFinished() {
                 onRenderingFinishedListener.onLoadFinished();
+                refreshDisplayedContent();
             }
         };
 

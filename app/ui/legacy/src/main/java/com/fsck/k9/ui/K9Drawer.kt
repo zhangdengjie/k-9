@@ -127,6 +127,7 @@ class K9Drawer(private val parent: MessageList, savedInstanceState: Bundle?) : K
         val photoUris = HashSet<Uri>()
 
         for (account in preferences.accounts) {
+            // shl 左移
             val drawerId = (account.accountNumber + 1 shl DRAWER_ACCOUNT_SHIFT).toLong()
 
             val pdi = ProfileDrawerItem()

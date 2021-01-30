@@ -30,6 +30,7 @@ class AccountPreferenceSerializer(
     @Synchronized
     fun loadAccount(account: Account, storage: Storage) {
         val accountUuid = account.uuid
+        // with 用法
         with(account) {
             storeUri = Base64.decode(storage.getString("$accountUuid.storeUri", null))
             localStorageProviderId = storage.getString("$accountUuid.localStorageProvider", storageManager.defaultProviderId)

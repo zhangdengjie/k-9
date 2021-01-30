@@ -127,9 +127,9 @@ public class MessageTopView extends LinearLayout {
             }
         }, loadPictures, hideUnsignedTextDivider, attachmentCallback);
 
-        if (view.hasHiddenExternalImages() && !showPicturesButtonClicked) {
-            showShowPicturesButton();
-        }
+//        if (view.hasHiddenExternalImages() && !showPicturesButtonClicked) {
+//            showShowPicturesButton();
+//        }
     }
 
     public void showMessageEncryptedButIncomplete(MessageViewInfo messageViewInfo, Drawable providerIcon) {

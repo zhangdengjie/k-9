@@ -60,6 +60,9 @@ import com.fsck.k9.view.MessageCryptoDisplayStatus;
 import timber.log.Timber;
 
 
+/**
+ * 显示单份邮件界面
+ */
 public class MessageViewFragment extends Fragment implements ConfirmationDialogFragmentListener,
         AttachmentViewCallback, OnClickShowCryptoKeyListener {
 
